@@ -2,9 +2,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { graphqlHTTP } = require('express-graphql');
 const { buildSchema } = require('graphql'); 
+const mongoose = require('mongoose');
 const app = express();
 
-const events = [] 
+const Event = require('./models/event');
+
 const graphqlOptions = {
     schema: buildSchema(`
         type Event {
@@ -37,18 +39,29 @@ const graphqlOptions = {
     `),
     rootValue: {
         events: () => {
-            return events;
+            return Event.find()
+                .then(events => {
+                    return events.map(event => {
+                        return {...event._doc, _id: event._doc._id.toString()}
+                    })
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         },
         createEvent: (args) => {
-            const event = {
-                _id: Math.random().toString(),
+            const event = new Event({
                 title: args.input.title,
                 description: args.input.description,
                 price: +args.input.price,
-                date: args.input.date,
-            }
-            events.push(event);
-            return event;
+                date: new Date(args.input.date),
+            });
+             return event.save().then(result => {
+                console.log(result);
+                return {...result._doc, _id: result._doc._id};
+            }).catch(error => {
+                console.log(error);
+            });
         }
 
     },
@@ -57,4 +70,11 @@ const graphqlOptions = {
 app.use(bodyParser.json());
 app.use('/graphql', graphqlHTTP(graphqlOptions));
 
-app.listen(3000);
+const connectionString =
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.ndsg4.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+mongoose.connect(connectionString)
+    .then(() => {
+        app.listen(3000);
+    }).catch(error => {
+        console.log(error);
+    });

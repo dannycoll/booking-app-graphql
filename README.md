@@ -1,0 +1,1 @@
+An example `nodemon.json` file can be found in the repo. This should be updated with the respective credentials of your DB.
