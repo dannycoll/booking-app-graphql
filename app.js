@@ -17,12 +17,14 @@ const graphqlOptions = {
             description: String
             price: Float!
             date: String!
+            creator: User!
         }
 
         type User {
             _id: ID!
             email: String!
             password: String
+            createdEvents: [Event!]
         }
 
         input EventInput {
@@ -53,10 +55,14 @@ const graphqlOptions = {
     `),
     rootValue: {
         events: () => {
-            return Event.find()
+            return Event.find().populate('creator')
                 .then(events => {
                     return events.map(event => {
-                        return {...event._doc, _id: event._doc._id.toString()}
+                        return {
+                            ...event._doc,
+                            _id: event._doc._id.toString(),
+                            creator: user.bind(this, event.creator)
+                        }
                     })
                 })
                 .catch(error => {
@@ -75,7 +81,11 @@ const graphqlOptions = {
             return event
                 .save()
                 .then(result => {
-                    createdEvent = { ...result._doc, _id: result._doc._id.toString() }
+                    createdEvent = {
+                        ...result._doc,
+                        _id: result._doc._id.toString(),
+                        creator: user.bind(result._doc.creator)
+                    };
                     return User.findById('6147bca61c579f3a4574c0cf');
                 })
                 .then(user => {
@@ -116,6 +126,25 @@ const graphqlOptions = {
 
     },
     graphiql: true,
+}
+
+const events = eventIds => {
+    return Event.find({_id: { $in: eventIds } })
+        .then(events => {
+            return events.map(event => {
+                return {
+                    ...event._doc,
+                    _id: event.id,
+                    creator: user.bind(this, event.creator)
+                };
+            });
+        });
+}
+const user = userId => {
+    return User.findById(userId)
+        .then(user => {
+            return { ...user._doc, _id: user.id, createdEvents: events.bind(this, user._doc.createdEvents) };
+        })
 }
 app.use(bodyParser.json());
 app.use('/graphql', graphqlHTTP(graphqlOptions));
