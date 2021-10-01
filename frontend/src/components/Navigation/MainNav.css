@@ -1,0 +1,40 @@
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3.5rem;
+    background: #01d1d1;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.main-nav_logo h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.main-nav_items {
+    margin-left: 1.5rem;
+}
+
+.main-nav_items ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.main-nav_items li {
+    margin: 0 1rem;
+}
+
+.main-nav_items a {
+    text-decoration: none;
+    color: white;
+}
+
+.main-nav_items a:hover, .main-nav_items a:active, .main-nav_items a.active {
+    color: yellow;
+}
