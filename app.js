@@ -21,7 +21,7 @@ const connectionString =
     `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.ndsg4.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 mongoose.connect(connectionString)
     .then(() => {
-        app.listen(3000);
+        app.listen(8000);
     }).catch(error => {
         console.log(error);
     });

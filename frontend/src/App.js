@@ -5,7 +5,7 @@ import {
   Redirect  
 } from 'react-router-dom';
 
-import AuthPage from './pages/Auth';
+import AuthPage from './pages/Auth/Auth';
 import BookingsPage from './pages/Bookings';
 import EventsPage from './pages/Events';
 import MainNav from './components/Navigation/MainNav';
