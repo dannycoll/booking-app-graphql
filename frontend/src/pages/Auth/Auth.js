@@ -1,8 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
+import AuthContext from '../../context/authContext';
 
 import './Auth.css';
 
 const AuthPage = props => {
+    const authContext = useContext(AuthContext);
     const emailRef = useRef('');
     const passwordRef = useRef('');
 
@@ -33,7 +35,10 @@ const AuthPage = props => {
             if (response.status !== 200 && response.status !== 201) 
                 throw new Error('Failed!');
             const resData = await response.json();
-            console.log(resData);
+            const loginData = resData.data.login;
+            if (loginData.token) {
+                authContext.login(loginData.token, loginData.userId, loginData.tokenExpiration);
+            }
         }catch(err) {
               console.log(err);
         }
@@ -66,7 +71,10 @@ const AuthPage = props => {
             if (response.status !== 200 && response.status !== 201) 
                 throw new Error('Failed!');
             const resData = await response.json();
-            console.log(resData);
+            const loginData = resData.data.login;
+            if (loginData.token) {
+                authContext.login(loginData.token, loginData.userId, loginData.tokenExpiration);
+            }
         }catch(err) {
               console.log(err);
         }
