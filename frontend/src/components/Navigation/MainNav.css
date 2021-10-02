@@ -35,6 +35,8 @@
     color: white;
 }
 
-.main-nav_items a:hover, .main-nav_items a:active, .main-nav_items a.active {
-    color: yellow;
+.main-nav_items a:hover,
+.main-nav_items a:active,
+.main-nav_items a.active {
+    color: #fdefa0;
 }
