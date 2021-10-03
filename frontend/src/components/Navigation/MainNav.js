@@ -14,9 +14,13 @@ const MainNav = () => {
             </div>
             <nav className="main-nav_items">
                 <ul>
-                    {!authContext.token && <li><NavLink to='/auth'>Authenticate</NavLink></li>}
+                    {!authContext.token && <li><NavLink to='/auth'>Login</NavLink></li>}
                     <li><NavLink to='/events'>Events</NavLink></li>
-                    {authContext.token && <li><NavLink to='/bookings'>Bookings</NavLink></li>}
+                    {authContext.token && 
+                        <>
+                            <li><NavLink to='/bookings'>Bookings</NavLink></li>
+                            <li><button onClick={() => authContext.logout()}>Logout</button></li>
+                        </>}
                 </ul>
             </nav>
         </header>

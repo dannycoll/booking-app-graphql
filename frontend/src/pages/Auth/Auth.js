@@ -8,12 +8,12 @@ const AuthPage = props => {
     const emailRef = useRef('');
     const passwordRef = useRef('');
 
-    const handleSubmit = async event => {
+    const handleLogin = async event => {
         event.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
         if(email.trim().length === 0 || password.trim().length === 0) return;
-        const requestBody = {
+        let requestBody = {
             query: `
               query {
                 login(email: "${email}", password: "${password}") {
@@ -70,11 +70,7 @@ const AuthPage = props => {
             });
             if (response.status !== 200 && response.status !== 201) 
                 throw new Error('Failed!');
-            const resData = await response.json();
-            const loginData = resData.data.login;
-            if (loginData.token) {
-                authContext.login(loginData.token, loginData.userId, loginData.tokenExpiration);
-            }
+            handleLogin(event);
         }catch(err) {
               console.log(err);
         }
@@ -90,7 +86,7 @@ const AuthPage = props => {
                 <input type="password" id="password" ref={passwordRef}></input>
             </div>
             <div className="form-actions">
-                <button type="submit" onClick={handleSubmit}>Login</button>
+                <button type="submit" onClick={handleLogin}>Login</button>
                 <button type="button" onClick={handleSignup}>Signup</button>
             </div>
         </form>

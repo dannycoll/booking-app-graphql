@@ -5,14 +5,17 @@
     width: 100%;
     height: 3.5rem;
     background: #01d1d1;
-    padding: 0 1rem;
+    padding: 0 2rem;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
 }
 
 .main-nav_logo h1 {
     margin: 0;
     font-size: 1.5rem;
+    cursor: default;
 }
 
 .main-nav_items {
@@ -24,19 +27,32 @@
     list-style: none;
     margin: 0;
     padding: 0;
+    align-items: center;
 }
 
 .main-nav_items li {
-    margin: 0 1rem;
+    margin: 3rem;
 }
 
-.main-nav_items a {
+.main-nav_items a,
+.main-nav_items button {
     text-decoration: none;
     color: white;
+    padding: 0.25rem 0.5rem;
+    border: none;
+    font: inherit;
+    background: transparent;
+    cursor: pointer;
+    vertical-align: middle;
+    margin: 0;
 }
 
 .main-nav_items a:hover,
 .main-nav_items a:active,
-.main-nav_items a.active {
-    color: #fdefa0;
+.main-nav_items a.active,
+.main-nav_items button:hover,
+.main-nav_items button:active {
+    color: #01d1d1;
+    background: white;
+    border-radius: 5px;
 }
