@@ -1,5 +1,6 @@
 const Event = require('../../models/event');
 const User = require('../../models/user');
+
 const { transformEvent } = require('./merge');
   
 module.exports = {
@@ -26,6 +27,7 @@ module.exports = {
       try {
         const result = await event.save();
         createdEvent = transformEvent(result);
+        
         const creator = await User.findById(req.userId);
   
         if (!creator) {
