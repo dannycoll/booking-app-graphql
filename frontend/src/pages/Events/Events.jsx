@@ -10,7 +10,9 @@ import "./Events.css";
 
 const EventsPage = () => {
   const authContext = useContext(AuthContext);
-
+  useEffect(() => {
+    fetchEvents();
+  }, []);
   const [creating, setCreating] = useState(false);
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,9 +91,6 @@ const EventsPage = () => {
       console.log(err);
     }
   };
-  useEffect(() => {
-    fetchEvents();
-  }, []);
 
   const fetchEvents = async () => {
     setIsLoading(true);
@@ -132,10 +131,41 @@ const EventsPage = () => {
   };
 
   const showDetailHandler = (eventId) => {
-    setSelectedEvent(events.findOne((x) => x._id === eventId));
+    setSelectedEvent(events.find((x) => x._id === eventId));
   };
 
-  const bookEventHandler = () => {};
+  const bookEventHandler = async () => {
+    if (!authContext.token) {
+      setSelectedEvent(null);
+      return;
+    }
+    const requestBody = {
+      query: `
+            mutation {
+              bookEvent(eventId: "${selectedEvent._id}") {
+                _id
+               createdAt
+               updatedAt
+              }
+            }
+          `,
+    };
+    try {
+      const res = await fetch("http://localhost:8000/graphql", {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + authContext.token,
+        },
+      });
+      if (res.status !== 200 && res.status !== 201) throw new Error("Failed!");
+
+      setSelectedEvent(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       {(creating || selectedEvent) && <Backdrop />}
@@ -175,7 +205,7 @@ const EventsPage = () => {
           canConfirm
           onCancel={closeModalHandler}
           onConfirm={bookEventHandler}
-          confirmText="Book"
+          confirmText={authContext.token ? "Book" : "Confirm"}
         >
           <h1>{selectedEvent.title}</h1>
           <h2>

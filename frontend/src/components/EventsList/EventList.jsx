@@ -19,7 +19,7 @@ const eventList = (props) => {
     );
   });
 
-  return <ul className="event__list"> {events} </ul>;
+  return <ul className="event_list"> {events} </ul>;
 };
 
 export default eventList;

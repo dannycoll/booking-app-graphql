@@ -1,9 +1,9 @@
-import React from 'react';
+import React from "react";
 
-import './EventItem.css';
+import "./EventItem.css";
 
-const eventItem = props => (
-  <li key={props.eventId} className="events__list-item">
+const eventItem = (props) => (
+  <li key={props.eventId} className="events_list-item">
     <div>
       <h1>{props.title}</h1>
       <h2>
@@ -11,13 +11,12 @@ const eventItem = props => (
       </h2>
     </div>
     <div>
-      {props.userId === props.creatorId ? (
-        <p>You own this event.</p>
-      ) : (
-        <button className="btn" onClick={props.onDetail.bind(this, props.eventId)}>
-          View Details
-        </button>
-      )}
+      <button
+        className="btn"
+        onClick={props.onDetail.bind(this, props.eventId)}
+      >
+        View Details
+      </button>
     </div>
   </li>
 );
