@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useContext } from "react";
 
+import "./Bookings.css";
 import Spinner from "../../components/Spinner/Spinner";
+import BookingList from "../../components/BookingsList/BookingsList";
 
 import AuthContext from "../../context/authContext";
 
@@ -51,19 +53,41 @@ const BookingsPage = () => {
     }
   };
 
+  const deleteBooking = async (bookingId) => {
+    setIsLoading(true);
+    const requestBody = {
+      query: `
+          mutation {
+            cancelBooking(bookingId: "${bookingId}") {
+            _id
+             title
+            }
+          }
+        `,
+    };
+    try {
+      const res = await fetch("http://localhost:8000/graphql", {
+        method: "POST",
+        body: JSON.stringify(requestBody),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + authContext.token,
+        },
+      });
+      if (res.status !== 200 && res.status !== 201) throw new Error("Failed!");
+      setBookings(bookings.filter(x => x._id !== bookingId));
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err);
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       {isLoading ? (
         <Spinner />
       ) : (
-        <ul>
-          {bookings.map((booking) => (
-            <li key={booking._id}>
-            {booking.event.title} -{' '}
-            {new Date(booking.createdAt).toLocaleDateString()}
-          </li>
-          ))}
-        </ul>
+        <BookingList bookings={bookings} onDelete={deleteBooking} />
       )}
     </>
   );
