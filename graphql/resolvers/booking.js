@@ -6,7 +6,7 @@ module.exports = {
   bookings: async (args, req) => {
     if(!req.isAuth) throw new Error("User not authenticated");
     try {
-      const bookings = await Booking.find();
+      const bookings = await Booking.find({ user: req.userId });
       return bookings.map(booking => {
         return transformBooking(booking);
       });
