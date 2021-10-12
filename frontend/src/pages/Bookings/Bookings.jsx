@@ -57,13 +57,16 @@ const BookingsPage = () => {
     setIsLoading(true);
     const requestBody = {
       query: `
-          mutation {
-            cancelBooking(bookingId: "${bookingId}") {
-            _id
-             title
-            }
-          }
-        `,
+      mutation CancelBooking($id: ID!) {
+        cancelBooking(bookingId: $id) {
+        _id
+         title
+        }
+      }
+    `,
+      variables: {
+        id: bookingId,
+      },
     };
     try {
       const res = await fetch("http://localhost:8000/graphql", {
@@ -75,7 +78,7 @@ const BookingsPage = () => {
         },
       });
       if (res.status !== 200 && res.status !== 201) throw new Error("Failed!");
-      setBookings(bookings.filter(x => x._id !== bookingId));
+      setBookings(bookings.filter((x) => x._id !== bookingId));
       setIsLoading(false);
     } catch (err) {
       console.log(err);
