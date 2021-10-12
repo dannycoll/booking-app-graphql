@@ -1,53 +1,67 @@
-import React from 'react';
-import { Bar as BarChart } from 'react-chartjs';
+import React from "react";
+import Chart from "react-google-charts";
 
+import Spinner from './../Spinner/Spinner';
 const BOOKINGS_BUCKETS = {
   Cheap: {
     min: 0,
-    max: 100
+    max: 100,
+    name: 'Cheap'
   },
   Normal: {
     min: 100,
-    max: 200
+    max: 200,
+    name: 'Normal'
   },
   Expensive: {
     min: 200,
-    max: 10000000
-  }
+    max: 10000000,
+    name: 'Expensive'
+  },
 };
 
-const bookingsChart = props => {
+const bookingsChart = (props) => {
   let chartData = { labels: [], datasets: [] };
-  let values = [];
+  let values = [["Bucket", "Amount"]];
+  let ticks = [];
   for (const bucket in BOOKINGS_BUCKETS) {
     const filteredBookingsCount = props.bookings.reduce((prev, current) => {
       if (
-        current.event.price > BOOKINGS_BUCKETS[bucket].min &&
-        current.event.price < BOOKINGS_BUCKETS[bucket].max
+        current.event.price >= BOOKINGS_BUCKETS[bucket].min &&
+        current.event.price <= BOOKINGS_BUCKETS[bucket].max
       ) {
+        ticks.push(prev+1);
         return prev + 1;
       } else {
         return prev;
       }
     }, 0);
-    values.push(filteredBookingsCount);
-    chartData.labels.push(bucket);
-    chartData.datasets.push({
-      // label: "My First dataset",
-      fillColor: 'rgba(220,220,220,0.5)',
-      strokeColor: 'rgba(220,220,220,0.8)',
-      highlightFill: 'rgba(220,220,220,0.75)',
-      highlightStroke: 'rgba(220,220,220,1)',
-      data: values
-    });
-    values = [...values];
-    values[values.length - 1] = 0;
+    values.push([bucket, filteredBookingsCount]);
   }
-  console.log('here');
+  
+  ticks.push(ticks[ticks.length-1]+1);
   return (
-    <div style={{ textAlign: 'center' }}>
-      <BarChart data={chartData} />
-    </div>
+    <Chart
+      width={"500px"}
+      height={"300px"}
+      chartType="BarChart"
+      loader={<Spinner />}
+      data={
+        values
+      }
+      options={{
+        title: "Booked Events",
+        chartArea: { width: "100%" },
+        hAxis: {
+          title: "Amount",
+          minValue: 0,
+          ticks: ticks
+        },
+        vAxis: {
+          title: "Price",
+        },
+      }}
+    />
   );
 };
 

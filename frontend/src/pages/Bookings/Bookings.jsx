@@ -102,9 +102,9 @@ const BookingsPage = () => {
       {isLoading ? (
         <Spinner />
       ) : outputType === "list" ? (
-        <BookingsChart bookings={bookings} />
-        ) : (
         <BookingList bookings={bookings} onDelete={deleteBooking} />
+        ) : (
+          <BookingsChart bookings={bookings} />
       )}
     </>
   );
