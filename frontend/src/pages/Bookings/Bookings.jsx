@@ -3,6 +3,8 @@ import React, { useEffect, useState, useContext } from "react";
 import "./Bookings.css";
 import Spinner from "../../components/Spinner/Spinner";
 import BookingList from "../../components/BookingsList/BookingsList";
+import BookingsControls from "../../components/BookingsControls/BookingsControls";
+import BookingsChart from "../../components/BookingsChart/BookingsChart";
 
 import AuthContext from "../../context/authContext";
 
@@ -12,6 +14,7 @@ const BookingsPage = () => {
   }, []);
   const [isLoading, setIsLoading] = useState(false);
   const [bookings, setBookings] = useState([]);
+  const [outputType, setOutputType] = useState("list");
 
   const authContext = useContext(AuthContext);
 
@@ -27,6 +30,7 @@ const BookingsPage = () => {
                       _id
                       title
                       date
+                      price
                     }
                 }
             }
@@ -44,13 +48,17 @@ const BookingsPage = () => {
       if (res.status !== 200 && res.status !== 201) throw new Error("Failed!");
       const resData = await res.json();
       const resBookings = resData.data.bookings;
-      console.log(resBookings);
       setBookings(resBookings);
       setIsLoading(false);
     } catch (err) {
       console.log(err);
       setIsLoading(false);
     }
+  };
+
+  const toggleOutputTypeHandler = () => {
+    const output = outputType === "list" ? "chart" : "list";
+    setOutputType(output);
   };
 
   const deleteBooking = async (bookingId) => {
@@ -87,9 +95,15 @@ const BookingsPage = () => {
   };
   return (
     <>
+      <BookingsControls
+        activeOutputType={outputType}
+        onChange={toggleOutputTypeHandler}
+      />
       {isLoading ? (
         <Spinner />
-      ) : (
+      ) : outputType === "list" ? (
+        <BookingsChart bookings={bookings} />
+        ) : (
         <BookingList bookings={bookings} onDelete={deleteBooking} />
       )}
     </>
